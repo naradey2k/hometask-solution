@@ -42,6 +42,14 @@ make test
 
 Triggers the exact local parsing of test cases declared in `eval/suite/cases.yaml`. Cases are mapped across asynchronous concurrent execution barriers respecting 429 logic caps natively. Traces are persisted to disk sequentially alongside rich text analysis matrices predicting explicit pass rates, $USD costs, and active memory footprint logic limits.
 
+### 1.5 Run a Single Case
+
+```bash
+python3 -m eval.cli run --case ambiguous_voyager
+```
+
+Isolates a unique YAML execution ID, allowing you to explicitly route and trace one specific logic constraint bypassing the full concurrent loop for rapid individual iteration!
+
 ### 2. Fast Rescoring
 
 ```bash

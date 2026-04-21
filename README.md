@@ -76,12 +76,18 @@ In `photosynthesis_contradiction` and `mars_rover_power_source`, the agent succe
 
 The agent's search preview explicitly shows that the rank 1 page *https://corpus.local/broken-page* consists of "[This article is being rewritten. Content coming soon.]". Yet, instead of proactively pruning the link based on the preview snippet, the agent wastes tool logic explicitly fetching and drafting parameters internally directly breaking logic flows before recovering or, in worse repeats, generating dual-parallel fetches yielding execution faults!
 
-## LLM-as-Judge & Grading Architecture (Validation)
+## LLM-Judge Design (And How We Validated It Isn't Garbage)
 
-- Uses `claude-haiku-4-5` strictly enforcing `temperature=0.0`.
-- Native structures enforce specific `score` and `rationale` tools locally.
-- Test suites load YAML localized grading metrics explicitly mapped uniquely per-test directly separating generalized evaluation drift!
-- Iterative spot-checks (Ambiguous payload targets) specifically validated explicitly highlighting string logic overrides mitigating inherent position or framework biases exclusively using clean metric logic.
+To measure Soft Assertions (like "Did the agent address ambiguity appropriately?"), we built a specialized Judge pipeline targeting `claude-haiku-4-5`. We knew naive zero-shot LLM judges are notoriously inconsistent, heavily biased, and often output "garbage" positive feedback. We solved these exact failure modes using four strict architectural constraints:
+
+1. **Forced Structured Output (No Parsing Guesswork):**
+   Our judge does not use free-form text responses. We rigidly enforce the `tool_choice` parameter in the API hook mapping to a `submit_verdict` tool schema. This mathematically forces the judge to yield cleanly formatted integer parameters for `score` (1-5) and a string parameter for `rationale`. 
+2. **Hyper-Specific Rubrics (No Generic Prompts):**
+   We explicitly banned generic "Is this a good answer?" grading systems. Every single case defined in `eval/suite/cases.yaml` injects an independent, highly targeted rubric payload directly into the grading prompt. The judge grades purely off pre-defined explicit metrics (e.g., *"Score 1-2 if it picks Voyager 1 without acknowledging that the prompt was ambiguous."*).
+3. **Trace Condensation to Prevent Distraction:**
+   Large context arrays pollute LLM reasoning and cause position-bias blindness. Before we pass the raw agent trace to our judge, `eval/judge.py` filters it cleanly through `make_trace_summary()`, stripping out system bloat, limiting payload lengths natively, and passing only the pure sequence of what the agent fetched versus what it answered.
+4. **Validation via Offline `rescore` Tracking:**
+   To prove the judge wasn't generating garbage, we isolated it via the `eval.cli rescore` command. This allowed us to freeze static traces and iterate entirely on our rubrics. For example: our early judge originally gave the agent a `4` on the "Voyager 1" task because the final date output was technically accurate. By utilizing `rescore`, we rapidly iterated the rubric context constraint specifically penalizing ambiguity until the judge reliably dropped the exact same trace down to a native failure state (`2.0`). We continuously spot-checked trace failures to guarantee the grade matched human evaluation heuristics.
 
 ## HTML Dashboard (`eval_viewer`)
 

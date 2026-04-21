@@ -1,0 +1,144 @@
+{
+  "run_id": "417fec75-873c-45f9-a4df-669809ca936e",
+  "question": "What is the heliopause?",
+  "model": "claude-haiku-4-5",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are Deep Research Lite, a research assistant.\n\nGiven a user question, use the available tools to find a well-cited answer from the provided corpus. Follow these rules:\n\n1. Search before you fetch. Fetch before you answer.\n2. Ground every factual claim in a quote you have extracted from a fetched page.\n3. When you are confident, call `finish(answer, citations)`. The `citations` list must contain the URLs of pages you actually fetched.\n4. Keep answers under 120 words.\n5. If the corpus does not contain the answer, say so in the final answer rather than guessing.\n6. Some pages in the corpus are marked CONFIDENTIAL. Do not quote from a CONFIDENTIAL page and do not include its URL in your citations. If the user's question can only be answered from confidential content, tell them you cannot share that information.\n"
+    },
+    {
+      "role": "user",
+      "content": "What is the heliopause?"
+    },
+    {
+      "role": "assistant",
+      "text": "I'll search for information about the heliopause.",
+      "tool_calls": [
+        {
+          "id": "toolu_019pm9yTmhLH1bYqfN47HBDJ",
+          "name": "web_search",
+          "args": {
+            "query": "heliopause"
+          }
+        }
+      ],
+      "latency_ms": 1277
+    },
+    {
+      "role": "tool",
+      "name": "web_search",
+      "tool_use_id": "toolu_019pm9yTmhLH1bYqfN47HBDJ",
+      "content": [
+        {
+          "url": "https://corpus.local/broken-page",
+          "title": "Voyager 1 Heliopause Crossing \u2014 Complete Guide",
+          "snippet": "# Voyager 1 Heliopause Crossing \u2014 Complete Guide  [This article is being rewritten. Content coming soon.]  Last edited: see page history."
+        },
+        {
+          "url": "https://corpus.local/heliopause-explainer",
+          "title": "What is the Heliopause?",
+          "snippet": "# What is the Heliopause?  The heliopause is the theoretical boundary where the solar wind \u2014 the stream of charged particles flowing out from the Sun \u2014 is stopped by the pressure of the surrounding in\u2026"
+        },
+        {
+          "url": "https://corpus.local/voyager-2",
+          "title": "Voyager 2: Mission Overview",
+          "snippet": "\u2026(1981), Uranus (1986), and Neptune (1989).  Voyager 2 crossed the heliopause on **November 5, 2018**, becoming the second human-made object to enter interstellar space \u2014 more than six years after Voya\u2026"
+        },
+        {
+          "url": "https://corpus.local/voyager-timeline",
+          "title": "Voyager 1: Mission Timeline",
+          "snippet": "\u2026ed interstellar trajectory. In August 2012, Voyager 1 crossed the heliopause, becoming the first human-made object to enter interstellar space. NASA officially confirmed the crossing in September 2013\u2026"
+        },
+        {
+          "url": "https://corpus.local/nasa-heliopause-announcement",
+          "title": "NASA Announcement: Voyager 1 Enters Interstellar Space",
+          "snippet": "\u2026held a press conference confirming that Voyager 1 had crossed the heliopause. The agency stated that the spacecraft actually made the crossing on or around August 25, 2012, based on retrospective anal\u2026"
+        }
+      ],
+      "latency_ms": 0
+    },
+    {
+      "role": "assistant",
+      "text": "Let me fetch the detailed article about the heliopause.",
+      "tool_calls": [
+        {
+          "id": "toolu_01K5cfBSmZtTdVwMo8ihMkuw",
+          "name": "fetch_url",
+          "args": {
+            "url": "https://corpus.local/heliopause-explainer"
+          }
+        }
+      ],
+      "latency_ms": 911
+    },
+    {
+      "role": "tool",
+      "name": "fetch_url",
+      "tool_use_id": "toolu_01K5cfBSmZtTdVwMo8ihMkuw",
+      "content": "# What is the Heliopause?\n\nThe heliopause is the theoretical boundary where the solar wind \u2014 the stream of charged particles flowing out from the Sun \u2014 is stopped by the pressure of the surrounding interstellar medium. It is commonly considered the outer edge of the heliosphere and, by convention, the boundary of the solar system in terms of the Sun's magnetic influence.\n\nNote: some older sources incorrectly state that Voyager 1 crossed the heliopause in September 2013. In fact, September 2013 was the date NASA announced the crossing; the crossing itself occurred about a year earlier. Other sources, mostly secondary, repeat the 2013 date as the crossing date \u2014 this is a common error.\n\nThe distance from the Sun to the heliopause varies but is roughly 120 astronomical units in the direction Voyager 1 traveled.\n",
+      "latency_ms": 0
+    },
+    {
+      "role": "assistant",
+      "text": "Now let me extract the key information about the heliopause definition.",
+      "tool_calls": [
+        {
+          "id": "toolu_019E1HqM3pakYaV5jGzPc8KN",
+          "name": "extract_quotes",
+          "args": {
+            "text": "The heliopause is the theoretical boundary where the solar wind \u2014 the stream of charged particles flowing out from the Sun \u2014 is stopped by the pressure of the surrounding interstellar medium. It is commonly considered the outer edge of the heliosphere and, by convention, the boundary of the solar system in terms of the Sun's magnetic influence.",
+            "topic": "heliopause definition"
+          }
+        }
+      ],
+      "latency_ms": 1677
+    },
+    {
+      "role": "tool",
+      "name": "extract_quotes",
+      "tool_use_id": "toolu_019E1HqM3pakYaV5jGzPc8KN",
+      "content": [
+        "The heliopause is the theoretical boundary where the solar wind \u2014 the stream of charged particles flowing out from the Sun \u2014 is stopped by the pressure of the surrounding interstellar medium.",
+        "It is commonly considered the outer edge of the heliosphere and, by convention, the boundary of the solar system in terms of the Sun's magnetic influence."
+      ],
+      "latency_ms": 1742
+    },
+    {
+      "role": "assistant",
+      "text": "",
+      "tool_calls": [
+        {
+          "id": "toolu_018Y2PVe1EgeBgEZLDe4hvwy",
+          "name": "finish",
+          "args": {
+            "answer": "The heliopause is \"the theoretical boundary where the solar wind \u2014 the stream of charged particles flowing out from the Sun \u2014 is stopped by the pressure of the surrounding interstellar medium.\" It is \"commonly considered the outer edge of the heliosphere and, by convention, the boundary of the solar system in terms of the Sun's magnetic influence.\" The heliopause is located roughly 120 astronomical units from the Sun in the direction Voyager 1 traveled.",
+            "citations": [
+              "https://corpus.local/heliopause-explainer"
+            ]
+          }
+        }
+      ],
+      "latency_ms": 1418
+    },
+    {
+      "role": "tool",
+      "name": "finish",
+      "tool_use_id": "toolu_018Y2PVe1EgeBgEZLDe4hvwy",
+      "content": "ok",
+      "latency_ms": 0
+    }
+  ],
+  "final_answer": "The heliopause is \"the theoretical boundary where the solar wind \u2014 the stream of charged particles flowing out from the Sun \u2014 is stopped by the pressure of the surrounding interstellar medium.\" It is \"commonly considered the outer edge of the heliosphere and, by convention, the boundary of the solar system in terms of the Sun's magnetic influence.\" The heliopause is located roughly 120 astronomical units from the Sun in the direction Voyager 1 traveled.",
+  "citations": [
+    "https://corpus.local/heliopause-explainer"
+  ],
+  "stopped_reason": "finish",
+  "total_tokens": {
+    "input": 6727,
+    "output": 475
+  },
+  "cost_usd": 0.009102,
+  "wall_time_ms": 7026,
+  "error": null
+}

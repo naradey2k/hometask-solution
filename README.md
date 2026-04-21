@@ -83,11 +83,12 @@ The agent's search preview explicitly shows that the rank 1 page *https://corpus
 
 Constructs a standalone localized zero-dependency layout natively displaying interactive nested data tree graphs visualizing every explicit timeline payload sequence independently mapping variables directly outside of complex frameworks seamlessly!
 
-## What's Next / Expansion Goals
+## What I'd add next
 
-- **Robust Significance Tracking:** Utilizing native McNemar tests directly calculating exact values prior to rendering a `FLAKY` label inherently instead of isolated basic ratios.
-- **Golden Cache Integration:** Building user-accepted explicit local `sql` caches validating pristine trace arrays locally checking test vectors deterministically preventing manual validation requests completely natively!
-- **Agent Drift Logging:** Pushing precise `$USD` tracking costs sequentially monitoring total bloat over application lifecycles strictly.
+- **Sampling Strategies:** Instead of running the entire suite sequentially, implementing intelligent test sampling to run a fast generic subset on every commit and full exhaustive runs periodically.
+- **Statistical Significance:** Improving the naive `--repeats N` logic by applying formal statistical significance checks (like McNemar's test) prior to rendering a `FLAKY` label or confirming a concrete regression during diffing.
+- **Golden-Set Maintenance:** Building a robust caching UI where users can automatically accept a pristine trace payload as "golden" directly from the terminal, preventing manual validation bounds for future regression checks natively!
+- **Drift Detection:** Logging aggregate performance states (like Mean tool calls or exact Token Cost arrays) to visualize cost drift and logic blooming passively over the agent's complete lifecycle.
 
 ## Loom Video
 

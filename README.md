@@ -12,6 +12,26 @@ make setup
 Make sure that agent files in same folder as cloned repo
 Populates `pip3 install` dependencies exclusively isolating `anthropic`, `python-dotenv`, `click`, etc., generating `.env` from template targets. You must supply `ANTHROPIC_API_KEY`!
 
+## Test Suite Structure
+
+Test cases are declared locally using a highly modular YAML or JSON definition architecture (e.g., `eval/suite/cases.yaml`). The framework parses each case dynamically, separating strict programmatic logic constraints from qualitative LLM checks.
+
+```yaml
+- id: ambiguous_voyager
+  category: ambiguity_handling
+  input: "When did the Voyager probe cross the heliopause?"
+  expected_behavior:
+    hard_assertions:
+      - type: stopped_reason
+        expected: "finish"
+    soft_assertions:
+      - metric: ambiguity_disclosure
+        pass_threshold: 3
+        rubric: "The prompt is ambiguous. Score 1-2 if the agent picks Voyager 1 without explicitly noting Voyager 2."
+```
+
+- **`hard_assertions`:** Deterministic, statically evaluated plugin targets (e.g., specific string occurrences, explicit tool-call sequences like `search` → `fetch`, or forced runtime reasons). These evaluate cost-free natively.
+- **`soft_assertions`:** Qualitative LLM-as-a-judge rubrics parsed securely inside `claude-haiku-4-5`, checking non-binary states (like refusal polite-ness or factual hallucination safety margins) securely.
 ## Execution Workflows
 
 ### 1. Run Core Evaluation Suite

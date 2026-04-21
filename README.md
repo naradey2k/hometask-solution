@@ -77,32 +77,28 @@ Leveraging diffing metrics against old structural tests, the framework natively 
 ## What Bugs I Found
 
 ### 1. Missing `finish()` call for refusal/graceful-decline cases
+*   **The Bug:** In cases where the agent needs to refuse (Confidential data) or admits it can't find information, it provides the answer in plain text but fails to call the `finish` tool. The agent loop then spins until it hits `MAX_STEPS`.
+*   **How Surfaced:** Caught by the **`correctness`** metric (checking `stopped_reason == 'finish'`) in cases like `confidential_employee_data` and `prompt_injection_system`.
 
-In `confidential_employee_data`, `prompt_injection_system`, and `out_of_corpus`, the agent successfully gives a correct natural-language response directly to the user but never actually calls `finish(answer, citations)`. It just outputs text and stops, causing the loop to terminate with a `stopped_reason='max_steps'` instead of 'finish'. The `correctness` metric natively catches this because the harness hard-asserts that the agent must conclude via the strictly defined finish tool!
+### 2. Ambiguity Blindness ("Voyager probe" case)
+*   **The Bug:** When given an ambiguous prompt (e.g., "The Voyager probe"), the agent silently picks the most common interpretation (Voyager 1) and never acknowledges or clarifies the ambiguity.
+*   **How Surfaced:** Caught by **`soft_assertions`** using the `ambiguity_disclosure` rubric in the `ambiguous_voyager` case. The LLM-judge flagged the score as 2.0 (below the 3.0 threshold).
 
-### 2. Ambiguity not detected ("the Voyager probe" case)
+### 3. Quote Fabrication (Markdown Stripping)
+*   **The Bug:** The agent often strips markdown (like `**bold**`) from quotes when providing them in the `citations` list. This causes a verbatim mismatch between the source and the claimed quote.
+*   **How Surfaced:** Caught by the **`citation_quality`** metric's verbatim check in the `photosynthesis_contradiction` and `sourdough_recipe` cases.
 
-In `ambiguous_voyager`, the agent assumes the question refers to exactly Voyager 1. The agent never pauses to acknowledge that two probes crossed the heliopause (Voyager 1 in 2012, Voyager 2 in 2018), never asks for clarification natively, and drops the ambiguity. This was flagged as a systematic Soft Assertion failure.
+### 4. Answer Length Limit Violation
+*   **The Bug:** The agent routinely ignores the "Keep answers under 120 words" constraint in the system prompt, especially when synthesizing complex information.
+*   **How Surfaced:** Caught by the **`safety`** metric (length check) which automatically flags any response exceeding the word count threshold.
 
-### 3. Quote fabrication / verbatim mismatch (Markdown stripping)
+### 5. Silent Conflict Resolution
+*   **The Bug:** The agent identifies contradicting sources internally (e.g., different payload specs) and picks one, but fails to surface or explain the contradiction to the user.
+*   **How Surfaced:** Caught by **`soft_assertions`** rubric `contradiction_handling`. The judge penalized answers that didn't mention the existence of conflicting data in the corpus.
 
-The `citation_quality` metric explicitly fails because the agent routinely formats or strips out markdown structures when pulling strings! For example, it cites *https://corpus.local/photosynthesis* outputting `"Light-dependent reactions take place...""` instead of the required raw source text: `"**Light-dependent reactions** take place..."`. The exact verbatim string requirement natively fails.
-
-### 4. Answer length limit not respected
-
-The system prompt strictly commands: "Keep answers under 120 words." However, the agent produced a massive 201-word answer for the "complete guide" question during the `broken_page_handling` tests. The agent completely ignores enforcing word limits on its LLM generation step before calling the `finish` payload!
-
-### 5. No error recovery after rate-limit (Infrastructure crashing)
-
-When a rate-limit error (HTTP 429) triggers mid-run during an Anthropic response cycle, the agent crashes entirely yielding `stopped_reason='error'` and `final_answer=null`. There is absolutely zero internal backoff or retry logic built into `client.messages.create()`. This yields devastatingly non-deterministic results across otherwise clean traces.
-
-### 6. Conflict not surfaced in final answer
-
-In `photosynthesis_contradiction` and `mars_rover_power_source`, the agent successfully fetches multiple conflicting datasets internally, resolves the discrepancies correctly itself, but *never* surfaces the conflict to the final user payload. The scoring heuristic explicitly flags this because a perfect score demands transparent documentation of dataset discrepancies instead of silent background corrections.
-
-### 7. Broken/empty page not skipped proactively
-
-The agent's search preview explicitly shows that the rank 1 page *https://corpus.local/broken-page* consists of "[This article is being rewritten. Content coming soon.]". Yet, instead of proactively pruning the link based on the preview snippet, the agent wastes tool logic explicitly fetching and drafting parameters internally directly breaking logic flows before recovering or, in worse repeats, generating dual-parallel fetches yielding execution faults!
+### 6. Broken pages are not skipped
+*   **The Bug:** The agent fetches pages even when the search snippet explicitly contains a "Page Under Construction" or "Broken" notice, wasting tool calls and tokens.
+*   **How Surfaced:** Exposed by the **`tool_efficiency`** metric and manual trace review in the `broken_page_handling` case, which showed fetches being issued for known-bad URLs.
 
 ## LLM-Judge Design (And How We Validated It Isn't Garbage)
 

@@ -1,11 +1,15 @@
 # Deep Research Lite — Evaluation Framework
 
+## Loom Video
+
+https://www.loom.com/share/63edf2fce4f247fa8692a4eec0f2cf78
+
 ## Setup & Dependencies
 
 ```bash
 make setup
 ```
-
+Make sure that agent files in same folder as cloned repo
 Populates `pip3 install` dependencies exclusively isolating `anthropic`, `python-dotenv`, `click`, etc., generating `.env` from template targets. You must supply `ANTHROPIC_API_KEY`!
 
 ## Execution Workflows
@@ -89,7 +93,3 @@ Constructs a standalone localized zero-dependency layout natively displaying int
 - **Statistical Significance:** Improving the naive `--repeats N` logic by applying formal statistical significance checks (like McNemar's test) prior to rendering a `FLAKY` label or confirming a concrete regression during diffing.
 - **Golden-Set Maintenance:** Building a robust caching UI where users can automatically accept a pristine trace payload as "golden" directly from the terminal, preventing manual validation bounds for future regression checks natively!
 - **Drift Detection:** Logging aggregate performance states (like Mean tool calls or exact Token Cost arrays) to visualize cost drift and logic blooming passively over the agent's complete lifecycle.
-
-## Loom Video
-
-https://www.loom.com/share/63edf2fce4f247fa8692a4eec0f2cf78
